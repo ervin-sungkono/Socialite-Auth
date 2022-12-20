@@ -18,6 +18,9 @@ class ProviderController extends Controller
     public function providerCallback($provider){
         $user = Socialite::driver($provider)->stateless()->user();
         $authUser = $this->findOrCreateUser($user, $provider);
+        if(!$authUser->hasVerifiedEmail()){
+            $authUser->markEmailAsVerified();
+        }
         Auth::login($authUser, true);
         return redirect()->route('home');
     }
